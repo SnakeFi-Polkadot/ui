@@ -1,7 +1,7 @@
 # DOT UI Kit
 
-This is a UI kit for the Polkadot ecosystem. It is built with [ShadCN UI](https://ui.shadcn.com/), [Tailwind CSS](https://tailwindcss.com/) and [Lucide icons](https://lucide.dev/).
+Made by the collaboration of `OpenGuild` and `Buidlstation`. 
 
-## Getting started
+The Polkadot UI Kit is a developer-friendly scaffold designed to help you quickly build dApps on the Polkadot ecosystem. This kit provides a starting point with a modern front-end framework, essential integrations, and examples for creating feature-rich applications on Polkadot.
 
 

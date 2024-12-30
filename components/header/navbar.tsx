@@ -62,7 +62,7 @@ function NavBar({ containerStyles, linkStyles, underlineStyles }: NavBarProps) {
                         key={index}
                         className={`
                             px-5 py-3 rounded-xl ${`capitalize ${linkStyles}`} ${link.path === parentPath
-                                ? `font-bold bg-white`
+                                ? `font-bold bg-white text-foreground`
                                 : "hover:text-secondary"
                             } transition-all ease-linear duration-100
                                 text-center text-wrap`}

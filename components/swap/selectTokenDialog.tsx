@@ -22,8 +22,8 @@ import { getWWNDAddress } from '@/contracts/utils/getAddress.util';
 
 
 interface SelectTokenDialogProps {
-    selectFromToken: (token: Token) => void;
-    selectToToken: (token: Token) => void;
+    selectFromToken: (token: Token | undefined) => void;
+    selectToToken: (token: Token | undefined) => void;
     fromToken?: Token;
     toToken?: Token;
     isFrom: boolean;
@@ -86,7 +86,7 @@ const SelectTokenDialog = ({ fromToken, toToken, selectFromToken, selectToToken,
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className={`bg-background w-auto flex flex-row items-center ${(isFrom && fromToken) || (!isFrom && toToken) ? "justify-between" : "justify-center"} pl-0 transition duration-300 ease-linear' variant="outline hover:bg-primary/60`}>
+                <Button className={`bg-background w-auto flex flex-row items-center ${(isFrom && fromToken) || (!isFrom && toToken) ? "justify-between" : "justify-center"} pl-0 hover:bg-background/90 hover:text-secondary/70 active:scale-95 duration-150 ease-linear transition-all`}>
                     {(isFrom && fromToken) || (!isFrom && toToken) ?
                         <>
                             <Image
@@ -118,16 +118,21 @@ const SelectTokenDialog = ({ fromToken, toToken, selectFromToken, selectToToken,
                                             <Button
                                                 key={index}
                                                 onClick={() => {
-
                                                     if (isFrom) {
                                                         if (fromToken?.address === token.address) {
                                                             return;
+                                                        }
+                                                        if (toToken?.address === token.address) {
+                                                            selectToToken(fromToken);
                                                         }
                                                         selectFromToken(token)
                                                     }
                                                     else {
                                                         if (toToken?.address === token.address) {
                                                             return;
+                                                        }
+                                                        if (fromToken?.address === token.address) {
+                                                            selectFromToken(toToken);
                                                         }
                                                         selectToToken(token)
                                                     }

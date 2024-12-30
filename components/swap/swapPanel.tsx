@@ -1,15 +1,16 @@
 'use client';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SwapSetting from './swapSetting';
 import TokenInput from './tokenInput';
 import { Token } from '@/utils/types.util';
 import BalanceToken from './balanceToken';
 import { useTokenBalance } from '@/hooks/smartContract/ERC20/useTokenBalance';
 import { useAccount } from 'wagmi';
-import { formatEther } from 'viem';
+import { formatEther, parseEther } from 'viem';
 import { ArrowDownUpIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Separator } from '@radix-ui/react-dropdown-menu';
+import SwapDialog from './swapDialog';
 
 interface SwapPanelProps {
 
@@ -17,11 +18,25 @@ interface SwapPanelProps {
 
 const SwapPanel = ({ }: SwapPanelProps) => {
     const { address, chainId } = useAccount();
+    const [swapLoading, setSwapLoading] = useState<boolean>(true);
     const [fromToken, setFromToken] = useState<Token | undefined>(undefined);
     const [toToken, setToToken] = useState<Token | undefined>(undefined);
 
     const [fromTokenValue, setFromTokenValue] = useState<number | undefined>(undefined);
     const [toTokenValue, setToTokenValue] = useState<number | undefined>(undefined);
+
+    const [settings, setSettings] = useState<{
+        slippage: number,
+        approveInfinity: boolean
+    }>({
+        slippage: 0.5,
+        approveInfinity: false
+    });
+
+    const [minOutputValue, setMinOutputValue] = useState<bigint | undefined>(undefined);
+
+    // const [reserve0, setReserve0] = useState<bigint>(0n);
+    // const [reserve1, setReserve1] = useState<bigint>(0n);
 
     const { balance: fromTokenBalance, isFetching: fromTokenIsFetching, isLoading: fromTokenIsLoading, isSuccess: fromTokenIsSuccess, isError: fromTokenIsError, refetch: fromTokenRefetch } = useTokenBalance({
         chainId,
@@ -37,9 +52,29 @@ const SwapPanel = ({ }: SwapPanelProps) => {
         enabled: !!toToken
     });
 
+    const calculateOutputValue = (input: bigint, reserve0: bigint, reserve1: bigint) => {
+        return input * reserve1 / reserve0;
+    }
+
+    useEffect(() => {
+        setSwapLoading(true);
+        if (!fromToken || !toToken || !fromTokenValue) {
+            if (fromTokenValue == 0) {
+                setToTokenValue(0);
+            }
+            setSwapLoading(false);
+            return;
+        }
+        const outputValue = calculateOutputValue(parseEther(fromTokenValue?.toString()), parseEther('10'), parseEther('25'));
+        setToTokenValue(Number(formatEther(outputValue)));
+        const minOutput = Number(outputValue) * settings.slippage;
+        setMinOutputValue(BigInt(minOutput));
+        setSwapLoading(false);
+    }, [fromToken, toToken, fromTokenValue, settings])
+
     return (
-        <div className="bg-background flex flex-col justify-start items-center gap-4 rounded-xl border-double border-4 border-primary w-[540px] h-[500px] self-center p-4">
-            <SwapSetting />
+        <div className="bg-primary flex flex-col justify-start items-center gap-4 rounded-xl border-double border-4 border-primary w-[540px] h-auto self-center p-4">
+            <SwapSetting settings={settings} setSettings={setSettings} />
             <div className="w-full h-auto">
                 <BalanceToken balance={fromTokenBalance ? formatEther(fromTokenBalance as any) : "0.00"} />
                 <TokenInput
@@ -57,8 +92,11 @@ const SwapPanel = ({ }: SwapPanelProps) => {
             </div>
             <div className="max-h-[40px] w-full flex items-center justify-center">
                 <Button
-                    className="h-full p-5 self-center justify-items-center bg-background text-primary hover:bg-primary hover:text-background transition-all duration-300 ease-linear"
+                    className="h-full self-center justify-items-center bg-inherit text-secondary group"
                     onClick={() => {
+                        if (!fromToken && !toToken) {
+                            return;
+                        }
                         const temp = fromToken;
                         setFromToken(toToken);
                         setToToken(temp);
@@ -67,7 +105,7 @@ const SwapPanel = ({ }: SwapPanelProps) => {
                         setToTokenValue(tempValue);
                     }}
                 >
-                    <ArrowDownUpIcon size={30} />
+                    <ArrowDownUpIcon size={20} className='group-active:scale-150 transition-all duration-300 ease-linear' />
                 </Button>
             </div>
             <div className="w-full h-auto">
@@ -104,7 +142,10 @@ const SwapPanel = ({ }: SwapPanelProps) => {
                 </div>
             </div>
             <div className="w-full">
-                <Button disabled={!fromToken || !toToken} variant={"default"} className="bg-secondary text-black hover:bg-secondary/70 w-full h-14 transition-all duration-400 hover:opacity-75">Swap</Button>
+                <SwapDialog
+                    disabled={!fromToken || !toToken || !fromTokenValue || !toTokenValue}
+                    loading={swapLoading}
+                />
             </div>
         </div>
     )

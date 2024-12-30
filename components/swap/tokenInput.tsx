@@ -10,8 +10,8 @@ export type TokenInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
     inputStyles?: string;
     fromToken?: Token;
     toToken?: Token;
-    selectFromToken: (token: Token) => void;
-    selectToToken: (token: Token) => void;
+    selectFromToken: (token: Token | undefined) => void;
+    selectToToken: (token: Token | undefined) => void;
     inputValue?: number;
     setInputValue: (value: number) => void;
     placeHolder?: string;
@@ -34,7 +34,8 @@ const TokenInput = React.forwardRef<HTMLInputElement, TokenInputProps>(
                     ref={ref}
                     readOnly={!isFrom}
                     dir='rtl'
-                    className={`w-auto p-2 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 bg-background ${inputStyles}`}
+                    max={100000000000000000000}
+                    className={`w-auto p-2 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 bg-background ${inputStyles} text-lg`}
                     value={inputValue}
                     pattern='/^\d*\.?\d*$/'
                     onChange={(e) => {

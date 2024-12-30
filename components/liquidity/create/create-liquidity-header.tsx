@@ -18,12 +18,11 @@ const CreateLiquidityHeader = ({ className }: CreateLiquidityHeaderProps) => {
             className
         )}>
             <Button
-                className="flex flex-row items-center justify-start gap-2 hover:bg-inherit"
-                variant={"ghost"}
+                className="flex flex-row items-center justify-start gap-2 bg-inherit hover:bg-inherit text-primary hover:text-secondary"
                 onClick={() => router.replace("/liquidity")}
             >
                 <ArrowLeftIcon size={24} />
-                <span className='text-xs font-extralight'>Pools</span>
+                <span className='text-sm font-extralight'>Pools</span>
             </Button>
         </div>
     )

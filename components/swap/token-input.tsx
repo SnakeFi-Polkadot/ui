@@ -2,7 +2,7 @@
 import React from 'react'
 import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
-import SelectTokenDialog from './selectTokenDialog';
+import SelectTokenDialog from './select-token-dialog';
 import { Token } from '@/utils/types.util';
 
 

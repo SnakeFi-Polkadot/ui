@@ -1,4 +1,4 @@
-import SwapPanel from '@/components/swap/swapPanel'
+import SwapPanel from '@/components/swap/swap-panel'
 import React from 'react'
 
 const SwapPage = () => {

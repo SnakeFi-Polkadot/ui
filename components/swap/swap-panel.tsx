@@ -1,16 +1,16 @@
 'use client';
 import React, { useEffect, useState } from 'react'
-import SwapSetting from './swapSetting';
-import TokenInput from './tokenInput';
+import SwapSetting from './swap-setting';
+import TokenInput from './token-input';
 import { Token } from '@/utils/types.util';
-import BalanceToken from './balanceToken';
+import BalanceToken from './balance-token';
 import { useTokenBalance } from '@/hooks/smartContract/ERC20/useTokenBalance';
 import { useAccount } from 'wagmi';
 import { formatEther, parseEther } from 'viem';
 import { ArrowDownUpIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Separator } from '@radix-ui/react-dropdown-menu';
-import SwapDialog from './swapDialog';
+import SwapDialog from './swap-dialog';
 
 interface SwapPanelProps {
 
